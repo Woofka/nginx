@@ -7,21 +7,41 @@ services:
     environment:
       - TZ=Asia/Yekaterinburg
     volumes:
-      - ./nginx-proxy.conf:/etc/nginx/conf.d/nginx-proxy.conf
-      - ./index.html:/usr/local/sbin/nginx-proxy/html/index.html
-      - ./nginx-logs:/usr/local/sbin/nginx-proxy/log
-      - ./certbot-data/conf:/etc/letsencrypt
-      - ./certbot-data/www:/var/www/certbot
+      - ./nginx-conf:/etc/nginx/conf.d
+      - ./nginx-logs:/var/log/nginx
+      - web-root:/var/www/html
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
     ports:
       - "80:50080"
       - "443:50443"
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    restart: always
+    networks:
+      - app-network
+    restart: unless-stopped
 
   certbot:
     image: certbot/certbot
     container_name: certbot
     volumes:
-      - ./certbot-data/conf:/etc/letsencrypt
-      - ./certbot-data/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      - web-root:/var/www/html
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    networks:
+      - app-network
+    depends_on:
+      - nginx
+    command: certonly --webroot --webroot-path=/var/www/html --email v.d.sobolev@ya.ru --agree-tos --no-eff-email --staging -d vdsobolev.ru  -d www.vdsobolev.ru
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./web-root
+      o: bind
+
+networks:
+  app-network:
+    driver: bridge
