@@ -9,7 +9,7 @@ services:
     volumes:
       - ./nginx-conf:/etc/nginx/conf.d
       - ./nginx-logs:/var/log/nginx
-      - web-root:/var/www/html
+      - ./web-root:/var/www/html
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
     ports:
@@ -23,7 +23,7 @@ services:
     image: certbot/certbot
     container_name: certbot
     volumes:
-      - web-root:/var/www/html
+      - ./web-root:/var/www/html
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
     networks:
@@ -35,12 +35,6 @@ services:
 volumes:
   certbot-etc:
   certbot-var:
-  web-root:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./web-root
-      o: bind
 
 networks:
   app-network:
