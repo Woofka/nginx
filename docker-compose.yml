@@ -10,6 +10,7 @@ services:
       - ./nginx-conf:/etc/nginx/conf.d
       - ./nginx-logs:/var/log/nginx
       - ./web-root:/var/www/html
+      - ./dhparam:/etc/ssl/certs
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
     ports:
