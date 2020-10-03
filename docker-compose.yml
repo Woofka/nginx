@@ -21,17 +21,18 @@ services:
     restart: unless-stopped
 
   certbot:
-    image: certbot/certbot
+    image: certbot/dns-cloudflare
     container_name: certbot
     volumes:
       - ./web-root:/var/www/html
+      - ./cloudflare.ini:/etc/cloudflare/credentials.ini
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
     networks:
       - app-network
     depends_on:
       - nginx
-    command: certonly --webroot --webroot-path=/var/www/html --email v.d.sobolev@ya.ru --agree-tos --no-eff-email --staging -d vdsobolev.ru  -d www.vdsobolev.ru
+    command: certonly --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare/credentials.ini --noninteractive --email v.d.sobolev@ya.ru --agree-tos --no-eff-email --staging -d vdsobolev.ru -d *.vdsobolev.ru
 
 volumes:
   certbot-etc:
