@@ -1,4 +1,4 @@
-# nginx
+# Deployable secured Nginx web-server
 Deployable nginx configured to obtain [Let's Encrypt](https://letsencrypt.org/) certificates
 
 # Requirements
