@@ -32,7 +32,7 @@ services:
       - default
     depends_on:
       - nginx
-    command: certonly --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare/credentials.ini --noninteractive --email v.d.sobolev@ya.ru --agree-tos --no-eff-email --staging -d vdsobolev.ru -d *.vdsobolev.ru
+    command: certonly --dns-cloudflare --dns-cloudflare-credentials /etc/cloudflare/credentials.ini --dns-cloudflare-propagation-seconds 15 --noninteractive --email v.d.sobolev@ya.ru --agree-tos --no-eff-email --staging -d vdsobolev.ru -d *.vdsobolev.ru
 
 volumes:
   certbot-etc:
